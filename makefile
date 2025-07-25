@@ -60,7 +60,7 @@ clean:
 
 # Building C library -----------------------------------------------------------
 
-core: $(TOOLS_DIR) $(BINS)
+core: $(T_COSE_DIR) $(QCBOR_DIR) $(BINS)
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
@@ -77,7 +77,7 @@ $(QCBOR_DIR):
 			$(QCBOR_DIR); \
 	fi
 
-$(BUILD_DIR)/%: $(SRC_DIR)/%.c $(LIB_SRCS) | $(BUILD_DIR) $(TOOLS_DIR)
+$(BUILD_DIR)/%: $(SRC_DIR)/%.c $(LIB_SRCS) | $(BUILD_DIR) $(T_COSE_DIR) $(QCBOR_DIR)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(BUILD_DIR)/test_%_unit: $(TEST_DIR)/test_%_unit.c $(LIB_DIR)/%.c $(LIB_SRCS) | $(BUILD_DIR) $(TOOLS_DIR)
