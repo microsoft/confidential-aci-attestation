@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: make lint
+
+  unit:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+    - uses: actions/checkout@v4
+    - run: make test-unit
+
+  system:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+    - uses: actions/checkout@v4
+    - run: make test-system
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+    - uses: actions/checkout@v4
+    - run: make test-docker
+
+  python:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+    - uses: actions/checkout@v4
+    - run: make test-python
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: [unit, system, docker, python]
+    steps:
+    - uses: actions/checkout@v4
+    - run: make coverage
+
+  address-sanitizer:
+    runs-on: ubuntu-latest
+    needs: [unit, system, docker, python]
+    steps:
+    - uses: actions/checkout@v4
+    - run: make asan

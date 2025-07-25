@@ -1,0 +1,23 @@
+services:
+
+  attestation:
+    image: ghcr.io/microsoft/confidential-aci-attestation:${TAG:-latest}
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ubuntu:22.04
+        RUN apt-get clean && apt-get update && \
+          apt-get install -y make gcc openssl libssl-dev git && \
+          rm -rf /var/lib/apt/lists/*
+        COPY . /src
+        RUN make -C /src clean core && cp /src/build/* /usr/local/bin
+    command: |
+      /bin/bash -c '
+        get_snp_version
+        echo "$(get_attestation_ccf)"
+        get_attestation_ccf \
+          | xargs -0 verify_attestation_ccf \
+            --report-data "example-report-data" \
+            --security-policy-b64 "$(cat /src/policy_aci.rego | base64 -w 0)"
+      '

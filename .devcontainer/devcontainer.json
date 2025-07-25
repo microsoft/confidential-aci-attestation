@@ -1,0 +1,49 @@
+{
+	"name": "Ubuntu",
+	"image": "mcr.microsoft.com/devcontainers/base:jammy",
+	"features": {
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"version": "3.12"
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"moby": true,
+			"azureDnsAutoDetection": true,
+			"installDockerBuildx": true,
+			"installDockerComposeSwitch": true,
+			"version": "latest",
+			"dockerDashComposeVersion": "v2"
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"installDirectlyFromGitHubRelease": true,
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/azure-cli:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"redhat.vscode-yaml",
+				"eamodio.gitlens",
+				"GitHub.vscode-pull-request-github",
+				"ms-azuretools.vscode-bicep",
+				"ms-vscode.cpptools-extension-pack",
+				"ms-vscode.makefile-tools"
+			],
+			"settings": {
+				"files.exclude": {
+					"**/__pycache__": true,
+					"**/.pytest_cache": true,
+					".coverage": true,
+					".ruff_cache": true
+				},
+				"python.testing.pytestArgs": [
+					"test/python"
+				],
+				"python.testing.unittestEnabled": false,
+				"python.testing.pytestEnabled": true
+			}
+		}
+	},
+	"postCreateCommand": "find . -name requirements.txt -exec pip install -r {} \\;"
+}
