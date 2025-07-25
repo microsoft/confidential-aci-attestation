@@ -41,7 +41,7 @@ The `get_attestation_*` binaries will fetch genuine attestation reports if runni
 
 These sample values were captured on an C-ACI instance running a version of the container defined in [compose.yml](compose.yml) with the [allow_all.rego](examples/security_policies/allow_all.rego) security policy.
 
-You can also run the verification code against a generated report, just ensure to format of the attestation (which follows the `get_attestation_` part of the binary name). For example:
+You can also run the verification code against a generated report, just ensure the format of the attestation (which follows the `get_attestation_` part of the binary name) matches between `get_` and `verify_`. For example:
 
 ```
 attestation=$(./build/get_attestation_ccf "example-report-data")
