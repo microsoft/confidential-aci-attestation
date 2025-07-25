@@ -1,4 +1,4 @@
-# Confidential-ACI-Attestation
+# Confidential-ACI-Attestation [![CI](https://github.com/microsoft/confidential-aci-attestation/actions/workflows/ci.yml/badge.svg)](https://github.com/microsoft/confidential-aci-attestation/actions/workflows/ci.yml) 
 
 ## Overview
 
