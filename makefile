@@ -65,12 +65,13 @@ core: $(TOOLS_DIR) $(BINS)
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
-$(TOOLS_DIR):
-	@mkdir -p $(TOOLS_DIR)
+$(T_COSE_DIR):
 	@if [ ! -d "$(T_COSE_DIR)" ]; then \
 		git clone --recursive https://github.com/laurencelundblade/t_cose.git \
 			$(T_COSE_DIR); \
 	fi
+
+$(QCBOR_DIR):
 	@if [ ! -d "$(QCBOR_DIR)" ]; then \
 		git clone https://github.com/laurencelundblade/qcbor.git \
 			$(QCBOR_DIR); \
@@ -94,7 +95,7 @@ docker: core
 
 # Testing ----------------------------------------------------------------------
 
-lint: $(TOOLS_DIR)
+lint: $(T_COSE_DIR) $(QCBOR_DIR)
 	@if ! command -v clang-tidy >/dev/null 2>&1; then \
 		sudo apt-get update -qq && sudo apt-get install -y -qq clang-tidy; \
 	fi
@@ -103,7 +104,7 @@ lint: $(TOOLS_DIR)
 
 test: test-unit test-system test-bindings
 
-test-unit: $(TOOLS_DIR) $(TEST_BINS)
+test-unit: $(T_COSE_DIR) $(QCBOR_DIR) $(TEST_BINS)
 	@for bin in $(TEST_BINS); do \
 		$$bin || exit 1; \
 	done
