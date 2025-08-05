@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Entry point module to mirror the C get_attestation_ccf executable via -m.
 """

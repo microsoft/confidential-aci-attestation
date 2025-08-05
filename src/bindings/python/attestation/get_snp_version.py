@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Entry point module to mirror the C get_snp_version executable via -m.
 """
