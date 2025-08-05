@@ -12,7 +12,7 @@ class CustomBuild(_build_py):
         # Determine project root (three levels up) and build C executables there
         here = os.path.abspath(os.path.dirname(__file__))
         project_root = os.path.abspath(os.path.join(here, "../../../"))
-        subprocess.check_call(["make"], cwd=project_root)
+        subprocess.check_call(["make", "core"], cwd=project_root)
         # Copy built executables into package directory in build
         pkg_dir = os.path.join(self.build_lib, 'attestation')
         self.mkpath(pkg_dir)
