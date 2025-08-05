@@ -88,7 +88,10 @@ $(BUILD_DIR)/test_%_unit: $(TEST_DIR)/test_%_unit.c $(LIB_DIR)/%.c $(LIB_SRCS) |
 bindings: python docker
 
 python: core
-	pip install -e src/bindings/python
+	@if ! command -v pip3 >/dev/null 2>&1; then \
+		curl -sS https://bootstrap.pypa.io/get-pip.py | python3; \
+	fi
+	python3 -m pip install -e src/bindings/python
 
 docker: core
 	docker compose build
