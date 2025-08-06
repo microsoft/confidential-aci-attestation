@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      packages: write
     env:
       SUBSCRIPTION: ${{ vars.SUBSCRIPTION }}
       RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
