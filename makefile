@@ -121,7 +121,6 @@ test-aci:
 		pip install git+https://github.com/microsoft/confidential-aci-testing@1.2.7; \
 	fi
 	c-aci-testing target run . \
-		--prefer-pull \
 		--policy-type "allow_all" \
 		--deployment-name $(DEPLOYMENT_NAME) | tee /tmp/logs.txt
 	@grep -q "Attestation validation successful" /tmp/logs.txt
@@ -150,6 +149,11 @@ asan: clean
 	$(MAKE) ASAN=1 test-system
 
 # Release ----------------------------------------------------------------------
+
+login-docker:
+	@unset GITHUB_TOKEN && \
+	gh auth login && \
+	gh auth token | docker login ghcr.io -u ${GITHUB_USER} --password-stdin
 
 release-docker: docker
 	docker compose push
