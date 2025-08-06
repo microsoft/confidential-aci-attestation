@@ -15,6 +15,8 @@ jobs:
   test-aci:
     # needs: ci # TODO: Uncomment when this works to run after regular CI
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
     - uses: actions/checkout@v4
 
