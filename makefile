@@ -121,6 +121,7 @@ test-aci:
 		pip install git+https://github.com/microsoft/confidential-aci-testing@1.2.7; \
 	fi
 	c-aci-testing target run . \
+		--prefer-pull \
 		--policy-type "allow_all" \
 		--deployment-name $(DEPLOYMENT_NAME) | tee /tmp/logs.txt
 	@grep -q "Attestation validation successful" /tmp/logs.txt
