@@ -12,8 +12,15 @@ jobs:
   ci:
     uses: ./.github/workflows/ci.yml
 
+  test-aci:
+    # needs: ci # TODO: Uncomment when this works to run after regular CI
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: make test-aci
+
   release-docker:
-    needs: ci
+    needs: test-aci
     runs-on: ubuntu-latest
     permissions:
       packages: write
