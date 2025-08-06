@@ -21,6 +21,8 @@ jobs:
       SUBSCRIPTION: ${{ vars.SUBSCRIPTION }}
       RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
       LOCATION: ${{ vars.LOCATION }}
+      REGISTRY: ${{ vars.REGISTRY }}
+      MANAGED_IDENTITY: ${{ vars.MANAGED_IDENTITY }}
     steps:
     - uses: actions/checkout@v4
 
