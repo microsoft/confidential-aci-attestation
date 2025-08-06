@@ -9,7 +9,11 @@ env:
   DEPLOYMENT_NAME: ${{ github.run_id }}-${{ github.run_attempt }}
 
 jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
   release-docker:
+    needs: ci
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -25,4 +29,4 @@ jobs:
 
     - run: make docker
     - run: make test-docker
-    - run: docker compose push
+    - run: make release-docker
