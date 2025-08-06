@@ -5,9 +5,9 @@ on:
     types: [created]
 
 env:
-  TAG: ${{ github.run_id }}-${{ github.run_attempt }} # Use a dummy tag when testing
+  TAG: ${{ github.event.release.tag_name }}
   DEPLOYMENT_NAME: ${{ github.run_id }}-${{ github.run_attempt }}
-  GH_TOKEN: ${{ github.token }}
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   release-docker:
@@ -26,4 +26,4 @@ jobs:
 
     - run: make docker
     - run: make test-docker
-    - run: TAG=${{ github.event.release.tag_name || 'latest' }} make release-docker
+    - run: make release-docker
