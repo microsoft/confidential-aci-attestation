@@ -65,6 +65,9 @@ core: $(T_COSE_DIR) $(QCBOR_DIR) $(BINS)
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
+$(TOOLS_DIR):
+	@mkdir -p $(TOOLS_DIR)
+
 $(T_COSE_DIR):
 	@if [ ! -d "$(T_COSE_DIR)" ]; then \
 		git clone --recursive https://github.com/laurencelundblade/t_cose.git \
