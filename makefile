@@ -126,9 +126,9 @@ test-aci:
 	c-aci-testing target run . \
 		--policy-type "allow_all" \
 		--deployment-name $(DEPLOYMENT_NAME) | tee /tmp/logs.txt
-	@grep -q "Attestation validation successful" /tmp/logs.txt
+	@grep -q "All tests passed" /tmp/logs.txt
 
-test-bindings: test-python test-docker
+test-bindings: test-python test-docker test-server
 
 test-python: python
 	@echo "Running python tests..."
@@ -138,6 +138,16 @@ test-python: python
 test-docker: docker
 	@echo "Running docker tests..."
 	docker compose up --build --abort-on-container-failure
+
+test-server: docker
+	@echo "Running server tests..."
+	@docker compose run -d attestation server
+	@until curl -sf http://127.0.0.1:5000/get_snp_version >/dev/null; do sleep 1; done
+	@./build/verify_attestation_ccf \
+		--report-data "example-report-data" \
+		--security-policy-b64 "$$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
+		"$$(curl http://127.0.0.1:5000/get_attestation_ccf?report_data=example-report-data)"
+	@docker compose down --remove-orphans
 
 coverage: clean
 	@if ! command -v lcov >/dev/null 2>&1; then \
