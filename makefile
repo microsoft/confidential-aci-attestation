@@ -126,7 +126,7 @@ test-aci:
 	c-aci-testing target run . \
 		--policy-type "allow_all" \
 		--deployment-name $(DEPLOYMENT_NAME) | tee /tmp/logs.txt
-	@grep -q "Attestation validation successful" /tmp/logs.txt
+	@grep -q "All tests passed" /tmp/logs.txt
 
 test-bindings: test-python test-docker test-server
 
