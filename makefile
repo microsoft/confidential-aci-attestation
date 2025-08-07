@@ -128,7 +128,7 @@ test-aci:
 		--deployment-name $(DEPLOYMENT_NAME) | tee /tmp/logs.txt
 	@grep -q "Attestation validation successful" /tmp/logs.txt
 
-test-bindings: test-python test-docker
+test-bindings: test-python test-docker test-server
 
 test-python: python
 	@echo "Running python tests..."
@@ -138,6 +138,15 @@ test-python: python
 test-docker: docker
 	@echo "Running docker tests..."
 	docker compose up --build --abort-on-container-failure
+
+test-server: docker
+	@echo "Running server tests..."
+	@docker compose run -d --remove-orphans attestation server
+	@docker compose run attestation verify_attestation_ccf \
+		--report-data "example-report-data" \
+		--security-policy-b64 "$$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
+		"$$(curl localhost:5000/get_attestation_ccf?report_data=example_report_data)"
+	@docker compose down
 
 coverage: clean
 	@if ! command -v lcov >/dev/null 2>&1; then \

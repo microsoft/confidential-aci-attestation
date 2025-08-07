@@ -1,4 +1,4 @@
-# Confidential-ACI-Attestation [![CI](https://github.com/microsoft/confidential-aci-attestation/actions/workflows/ci.yml/badge.svg)](https://github.com/microsoft/confidential-aci-attestation/actions/workflows/ci.yml) 
+# Confidential-ACI-Attestation [![CI](https://github.com/microsoft/confidential-aci-attestation/actions/workflows/ci.yml/badge.svg)](https://github.com/microsoft/confidential-aci-attestation/actions/workflows/ci.yml)
 
 ## Overview
 
@@ -10,20 +10,24 @@ This is a C library for getting and verifying attestations from Confidential ACI
 
 ## Installation
 
-If running from source, run:
+### From Source
+
+To build the core c library as well as all bindings from source, checkout the code and run
 
 ```
 make
 ```
 
-To build the C executables, you can then build the targets depending on your preferred method of running:
+### Python Package
 
 ```
-make python
+pip install git+https://github.com/microsoft/confidential-aci-attestation@0.1.0#subdirectory=src/bindings/python
 ```
 
+### Docker Image
+
 ```
-make docker
+docker pull ghcr.io/microsoft/confidential-aci-attestation:0.1.0
 ```
 
 ## Usage
@@ -75,6 +79,24 @@ docker run $image verify_attestation_ccf \
     --security-policy-b64 "$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
     "$attestation"
 ```
+
+### Server
+
+Sometimes you want to deploy this code as a container alongside your main logic container so that you can provide your report data at a later time.
+
+```
+image="ghcr.io/microsoft/confidential-aci-attestation:latest"
+
+docker run -d --network=host $image server
+
+attestation=$(curl localhost:5000/get_attestation_ccf?report_data=example_report_data)
+
+docker run $image verify_attestation_ccf \
+    --report-data "example-report-data" \
+    --security-policy-b64 "$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
+    "$attestation"
+```
+
 
 ## Contributing
 
