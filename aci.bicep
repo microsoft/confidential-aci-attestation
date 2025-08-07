@@ -33,7 +33,7 @@ resource attestation 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = 
                 'verify_attestation_ccf'
                 '--report-data "example-report-data"'
                 '--security-policy-b64 "$(cat /src/policy_aci.rego | base64 -w 0)" &&'
-                'sleep 10 &&'
+                'until curl -sf http://127.0.0.1:5000/get_snp_version >/dev/null; do sleep 1; done &&'
                 'curl http://127.0.0.1:5000/get_attestation_ccf?report_data=example-report-data | xargs -0'
                 'verify_attestation_ccf'
                 '--report-data "example-report-data"'

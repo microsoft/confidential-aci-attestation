@@ -142,6 +142,7 @@ test-docker: docker
 test-server: docker
 	@echo "Running server tests..."
 	@docker compose run -d attestation server
+	@until curl -sf http://127.0.0.1:5000/get_snp_version >/dev/null; do sleep 1; done
 	@./build/verify_attestation_ccf \
 		--report-data "example-report-data" \
 		--security-policy-b64 "$$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
