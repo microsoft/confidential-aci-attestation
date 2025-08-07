@@ -23,7 +23,7 @@ def create_app(args):
     @app.route('/get_attestation_ccf', methods=['GET'])
     def get_attestation_ccf():
         report_data = request.args.get('report_data', '')
-        return execute_binary("get_attestation_ccf", report_data.split())
+        return execute_binary("get_attestation_ccf", [report_data])
 
     return app
 
