@@ -89,7 +89,7 @@ image="ghcr.io/microsoft/confidential-aci-attestation:latest"
 
 docker run -d --network=host $image server
 
-attestation=$(curl localhost:5000/get_attestation_ccf?report_data=example_report_data)
+attestation=$(curl localhost:5000/get_attestation_ccf?report_data=example-report-data)
 
 docker run $image verify_attestation_ccf \
     --report-data "example-report-data" \
