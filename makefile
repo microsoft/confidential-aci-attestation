@@ -141,12 +141,12 @@ test-docker: docker
 
 test-server: docker
 	@echo "Running server tests..."
-	@docker compose run -d --remove-orphans attestation server
-	@docker compose run attestation verify_attestation_ccf \
+	@docker compose run -d attestation server
+	@./build/verify_attestation_ccf \
 		--report-data "example-report-data" \
 		--security-policy-b64 "$$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
-		"$$(curl localhost:5000/get_attestation_ccf?report_data=example_report_data)"
-	@docker compose down
+		"$$(curl http://127.0.0.1:5000/get_attestation_ccf?report_data=example-report-data)"
+	@docker compose down --remove-orphans
 
 coverage: clean
 	@if ! command -v lcov >/dev/null 2>&1; then \
