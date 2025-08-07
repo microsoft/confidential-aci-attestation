@@ -17,7 +17,7 @@ def create_app(args):
 
     @app.route('/get_snp_version', methods=['GET'])
     def get_snp_version():
-        return execute_binary("get_snp_version")
+        return execute_binary("get_snp_version", [])
 
 
     @app.route('/get_attestation_ccf', methods=['GET'])
