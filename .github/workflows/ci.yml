@@ -5,9 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main, dev/* ]
-  release:
-    types: [created]
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   lint:

@@ -65,6 +65,9 @@ core: $(T_COSE_DIR) $(QCBOR_DIR) $(BINS)
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
+$(TOOLS_DIR):
+	@mkdir -p $(TOOLS_DIR)
+
 $(T_COSE_DIR):
 	@if [ ! -d "$(T_COSE_DIR)" ]; then \
 		git clone --recursive https://github.com/laurencelundblade/t_cose.git \
@@ -118,9 +121,9 @@ test-system: core
 DEPLOYMENT_NAME ?= test-aci
 test-aci:
 	@if ! command -v c-aci-testing >/dev/null 2>&1; then \
-		tools/c-aci-testing/install.sh; \
+		pip install git+https://github.com/microsoft/confidential-aci-testing@1.2.7; \
 	fi
-	. tools/c-aci-testing/.env && c-aci-testing target run . \
+	c-aci-testing target run . \
 		--policy-type "allow_all" \
 		--deployment-name $(DEPLOYMENT_NAME) | tee /tmp/logs.txt
 	@grep -q "Attestation validation successful" /tmp/logs.txt
@@ -149,6 +152,11 @@ asan: clean
 	$(MAKE) ASAN=1 test-system
 
 # Release ----------------------------------------------------------------------
+
+login-docker:
+	@unset GITHUB_TOKEN && \
+	gh auth login && \
+	gh auth token | docker login ghcr.io -u ${GITHUB_USER} --password-stdin
 
 release-docker: docker
 	docker compose push
