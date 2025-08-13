@@ -5,6 +5,7 @@ from flask import Flask, request
 import subprocess
 import argparse
 from typing import List
+import tempfile
 
 def create_app(args):
 
@@ -20,10 +21,13 @@ def create_app(args):
         return execute_binary("get_snp_version", [])
 
 
-    @app.route('/get_attestation_ccf', methods=['GET'])
+    @app.route('/get_attestation_ccf', methods=['POST'])
     def get_attestation_ccf():
-        report_data = request.args.get('report_data', '')
-        return execute_binary("get_attestation_ccf", [report_data])
+        with tempfile.NamedTemporaryFile() as tmp:
+            tmp.write(request.get_data())
+            tmp.flush()
+            return execute_binary("get_attestation_ccf", [tmp.name])
+
 
     return app
 
