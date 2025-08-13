@@ -1,0 +1,20 @@
+name: Cleanup
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  cleanup-acr:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.MANAGED_ID_CLIENT_ID }}
+        tenant-id: ${{ secrets.MANAGED_ID_TENANT_ID }}
+        subscription-id: ${{ vars.SUBSCRIPTION }}
+    - run: |
+        for repo in $(az acr repository list -n "caciattestation" -o tsv); do
+          az acr repository delete -n "caciattestation" --repository "$repo" --yes
+        done

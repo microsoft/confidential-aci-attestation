@@ -1,7 +1,7 @@
 services:
 
   attestation:
-    image: ghcr.io/microsoft/confidential-aci-attestation:${TAG:-latest}
+    image: ${REGISTRY:-caciattestation.azurecr.io}/microsoft/confidential-aci-attestation:${TAG:-latest}
     platform: linux/amd64
     network_mode: host
     build:

@@ -1,9 +1,19 @@
 param location string = resourceGroup().location
+param registry string
+param tag string
 param ccePolicies object
+param managedIDGroup string = resourceGroup().name
+param managedIDName string
 
 resource attestation 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
   name: deployment().name
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${resourceId(managedIDGroup, 'Microsoft.ManagedIdentity/userAssignedIdentities', managedIDName)}': {}
+    }
+  }
   properties: {
     osType: 'Linux'
     sku: 'Confidential'
@@ -11,11 +21,17 @@ resource attestation 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = 
     confidentialComputeProperties: {
       ccePolicy: ccePolicies.aci
     }
+    imageRegistryCredentials: [
+      {
+        server: registry
+        identity: resourceId(managedIDGroup, 'Microsoft.ManagedIdentity/userAssignedIdentities', managedIDName)
+      }
+    ]
     containers: [
       {
         name: 'attestation'
         properties: {
-          image: 'ghcr.io/microsoft/confidential-aci-attestation:latest'
+          image: '${registry}/microsoft/confidential-aci-attestation:${tag}'
           resources: {
             requests: {
               memoryInGB: 2
@@ -48,7 +64,7 @@ resource attestation 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = 
       {
         name: 'attestation-server'
         properties: {
-          image: 'ghcr.io/microsoft/confidential-aci-attestation:latest'
+          image: '${registry}/microsoft/confidential-aci-attestation:${tag}'
           ports: [
             {
               port: 5000
