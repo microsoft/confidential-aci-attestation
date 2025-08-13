@@ -71,6 +71,8 @@ jobs:
 
   aci:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     needs: lint
     steps:
     - uses: actions/checkout@v4
