@@ -26,7 +26,7 @@ class CustomBuild(_build_py):
 
 setup(
     name='attestation',
-    version='0.1.0',
+    version='0.2.0',
     description='Python bindings for the SNP attestation C core',
     packages=find_packages(where='.'),
     package_dir={'': '.'},
