@@ -9,7 +9,11 @@ from . import get_attestation_ccf as _get_att
 def main():
     args = sys.argv[1:]
     try:
-        output = _get_att(*args)
+        report_data = b''
+        if args:
+            with open(args[0], "rb") as report_data_file:
+                report_data = report_data_file.read()
+        output = _get_att(report_data)
         sys.stdout.write(output)
         sys.exit(0)
     except subprocess.CalledProcessError as e:

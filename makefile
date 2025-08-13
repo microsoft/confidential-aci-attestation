@@ -113,10 +113,11 @@ test-unit: $(T_COSE_DIR) $(QCBOR_DIR) $(TEST_BINS)
 	done
 
 test-system: core
-	./build/get_attestation_ccf "example-report-data" \
-		| xargs -0 ./build/verify_attestation_ccf \
-			--report-data "example-report-data" \
-			--security-policy-b64 "$$(cat examples/security_policies/allow_all.rego | base64 -w 0)"
+	@printf "example-report-data" | \
+		./build/verify_attestation_ccf \
+			--report-data /dev/stdin \
+			--security-policy-b64 "$$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
+			"$$(printf "example-report-data" | ./build/get_attestation_ccf)"
 
 DEPLOYMENT_NAME ?= test-aci
 test-aci:
@@ -143,10 +144,11 @@ test-server: docker
 	@echo "Running server tests..."
 	@docker compose run -d attestation server
 	@until curl -sf http://127.0.0.1:5000/get_snp_version >/dev/null; do sleep 1; done
-	@./build/verify_attestation_ccf \
-		--report-data "example-report-data" \
-		--security-policy-b64 "$$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
-		"$$(curl http://127.0.0.1:5000/get_attestation_ccf?report_data=example-report-data)"
+	@printf "example-report-data" | \
+		./build/verify_attestation_ccf \
+			--report-data /dev/stdin \
+			--security-policy-b64 "$$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
+		"$$(printf "example-report-data" | curl http://127.0.0.1:5000/get_attestation_ccf --data-binary @-)"
 	@docker compose down --remove-orphans
 
 coverage: clean
