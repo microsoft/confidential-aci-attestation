@@ -86,14 +86,14 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
-    needs: [unit, system, docker, server, python, aci]
+    needs: [unit, system, docker, server, python]
     steps:
     - uses: actions/checkout@v4
     - run: make coverage
 
   address-sanitizer:
     runs-on: ubuntu-latest
-    needs: [unit, system, docker, server, python, aci]
+    needs: [unit, system, docker, server, python]
     steps:
     - uses: actions/checkout@v4
     - run: make asan
