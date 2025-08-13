@@ -48,10 +48,10 @@ These sample values were captured on an C-ACI instance running a version of the 
 You can also run the verification code against a generated report, just ensure the format of the attestation (which follows the `get_attestation_` part of the binary name) matches between `get_` and `verify_`. For example:
 
 ```
-attestation=$(./build/get_attestation_ccf "example-report-data")
+attestation=$(./build/get_attestation_ccf <(printf "example-report-data"))
 
 ./build/verify_attestation_ccf \
-    --report-data "example-report-data" \
+    --report-data <(printf "example-report-data") \
     --security-policy-b64 "$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
     "$attestation"
 ```
@@ -59,10 +59,10 @@ attestation=$(./build/get_attestation_ccf "example-report-data")
 ### Python package
 
 ```
-attestation=$(python -m attestation.get_attestation_ccf "example-report-data")
+attestation=$(python -m attestation.get_attestation_ccf <(printf "example-report-data"))
 
 python -m attestation.verify_attestation_ccf \
-    --report-data "example-report-data" \
+    --report-data <(printf "example-report-data") \
     --security-policy-b64 "$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
     "$attestation"
 ```
@@ -72,10 +72,10 @@ python -m attestation.verify_attestation_ccf \
 ```
 image="ghcr.io/microsoft/confidential-aci-attestation:0.2.0"
 
-attestation=$(docker run $image get_attestation_ccf "example-report-data")
+attestation=$(printf "example-report-data" | docker run $image get_attestation_ccf)
 
-docker run $image verify_attestation_ccf \
-    --report-data "example-report-data" \
+printf "example-report-data" | docker run -i $image verify_attestation_ccf \
+    --report-data /dev/stdin \
     --security-policy-b64 "$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
     "$attestation"
 ```
@@ -89,10 +89,10 @@ image="ghcr.io/microsoft/confidential-aci-attestation:0.2.0"
 
 docker run -d --network=host $image server
 
-attestation=$(curl localhost:5000/get_attestation_ccf?report_data=example-report-data)
+attestation=$(printf "example-report-data" | curl localhost:5000/get_attestation_ccf --data-binary @-)
 
-docker run $image verify_attestation_ccf \
-    --report-data "example-report-data" \
+printf "example-report-data" | docker run -i $image verify_attestation_ccf \
+    --report-data /dev/stdin \
     --security-policy-b64 "$(cat examples/security_policies/allow_all.rego | base64 -w 0)" \
     "$attestation"
 ```
