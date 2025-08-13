@@ -6,7 +6,27 @@ on:
   pull_request:
     branches: [ main, dev/* ]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The tag to use for the release'
+        required: true
+        type: string
   workflow_call:
+    inputs:
+      tag:
+        description: 'The tag to use for the release'
+        required: true
+        type: string
+
+
+env:
+  SUBSCRIPTION: ${{ vars.SUBSCRIPTION }}
+  RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
+  LOCATION: ${{ vars.LOCATION }}
+  REGISTRY: ${{ vars.REGISTRY }}
+  MANAGED_IDENTITY: ${{ vars.MANAGED_IDENTITY }}
+  DEPLOYMENT_NAME: test-${{ inputs.tag || format('ci-{0}', github.run_id) }}
+  TAG: ${{ inputs.tag || format('ci-{0}', github.run_id) }}
 
 jobs:
   lint:
@@ -49,6 +69,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: make test-python
+
+  aci:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    needs: lint
+    steps:
+    - uses: actions/checkout@v4
+    - uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.MANAGED_ID_CLIENT_ID }}
+        tenant-id: ${{ secrets.MANAGED_ID_TENANT_ID }}
+        subscription-id: ${{ vars.SUBSCRIPTION }}
+    - run: make test-aci
 
   coverage:
     runs-on: ubuntu-latest

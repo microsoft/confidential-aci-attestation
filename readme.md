@@ -70,7 +70,7 @@ python -m attestation.verify_attestation_ccf \
 ### Docker image
 
 ```
-image="ghcr.io/microsoft/confidential-aci-attestation:latest"
+image="ghcr.io/microsoft/confidential-aci-attestation:0.2.0"
 
 attestation=$(docker run $image get_attestation_ccf "example-report-data")
 
@@ -85,7 +85,7 @@ docker run $image verify_attestation_ccf \
 Sometimes you want to deploy this code as a container alongside your main logic container so that you can provide your report data at a later time.
 
 ```
-image="ghcr.io/microsoft/confidential-aci-attestation:latest"
+image="ghcr.io/microsoft/confidential-aci-attestation:0.2.0"
 
 docker run -d --network=host $image server
 
