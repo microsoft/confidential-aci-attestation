@@ -21,13 +21,13 @@ make
 ### Python Package
 
 ```
-pip install git+https://github.com/microsoft/confidential-aci-attestation@0.1.0#subdirectory=src/bindings/python
+pip install git+https://github.com/microsoft/confidential-aci-attestation@0.2.0#subdirectory=src/bindings/python
 ```
 
 ### Docker Image
 
 ```
-docker pull ghcr.io/microsoft/confidential-aci-attestation:0.1.0
+docker pull ghcr.io/microsoft/confidential-aci-attestation:0.2.0
 ```
 
 ## Usage
