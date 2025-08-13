@@ -12,12 +12,24 @@ int main(int argc, char** argv) {
     // Prepare report_data
     snp_report_data_t report_data = {0};
     if (argc > 1 && argv[1]) {
-        size_t input_len = strlen(argv[1]);
-        if (input_len > sizeof(snp_report_data_t)) {
-            fprintf(stderr, "Warning: report_data string too long (%zu > %zu), truncating.\n", input_len, sizeof(snp_report_data_t));
-            input_len = sizeof(snp_report_data_t);
+
+        // Get File Descriptor
+        FILE* f = fopen(argv[1], "rb");
+        if (!f) {
+          perror("fopen report_data");
+          return 1;
         }
-        memcpy(report_data, argv[1], input_len);
+
+        // Read the report data
+        fread(report_data, 1, sizeof(report_data), f);
+
+        // If there's more data beyond our buffer, warn the user that we're truncating
+        int extra = fgetc(f);
+        if (extra != EOF) {
+            fprintf(stderr, "Warning: report_data input longer than %zu bytes, truncating.\n", sizeof(report_data));
+        }
+
+        fclose(f);
     }
 
     // Get the SNP report
