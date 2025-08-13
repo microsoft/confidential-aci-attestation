@@ -25,6 +25,7 @@ env:
   LOCATION: ${{ vars.LOCATION }}
   REGISTRY: ${{ vars.REGISTRY }}
   MANAGED_IDENTITY: ${{ vars.MANAGED_IDENTITY }}
+  DEPLOYMENT_NAME: test-${{ inputs.tag || format('ci-{0}', github.run_id) }}
   TAG: ${{ inputs.tag || format('ci-{0}', github.run_id) }}
 
 jobs:
