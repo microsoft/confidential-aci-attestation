@@ -15,7 +15,7 @@ jobs:
       tag: ${{ github.event.release.tag_name }}-rc
 
   release-docker:
-    needs: test-aci
+    needs: ci
     runs-on: ubuntu-latest
     permissions:
       id-token: write
