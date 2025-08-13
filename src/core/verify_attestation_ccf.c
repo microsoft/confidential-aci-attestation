@@ -16,14 +16,23 @@ int main(int argc, char** argv) {
 
     // Initialize parameters
     snp_report_data_t report_data = {0};
-    char* report_data_str = NULL;
     char* security_policy_b64 = NULL;
     char* ccf_attestation = NULL;
 
     // Parse parameters to the script
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--report-data") == 0 && i + 1 < argc) {
-            report_data_str = argv[++i];
+
+            // Get File Descriptor
+            FILE* f = fopen(argv[++i], "rb");
+            if (!f) {
+                perror("fopen report_data");
+                return 1;
+            }
+
+            // Read the report data
+            fread(report_data, 1, sizeof(report_data), f);
+            fclose(f);
         }
         else if (strcmp(argv[i], "--security-policy-b64") == 0 && i + 1 < argc) {
             security_policy_b64 = argv[++i];
@@ -42,14 +51,6 @@ int main(int argc, char** argv) {
         fprintf(stderr, "  --report-data <string> \n");
         fprintf(stderr, "  --security-policy-b64 <string> \n");
         return 1;
-    }
-
-    // Parse report data string into bytes (truncate if longer than buffer)
-    if (report_data_str) {
-        size_t data_len = strlen(report_data_str);
-        if (data_len > sizeof(report_data))
-            data_len = sizeof(report_data);
-        memcpy(report_data, report_data_str, data_len);
     }
 
     // Parse SNP report from input JSON
