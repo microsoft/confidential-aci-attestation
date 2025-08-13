@@ -9,6 +9,7 @@ Provides high-level functions wrapping the C executables.
 import os
 import shutil
 import subprocess
+import tempfile
 
 # Locate executables with fallback for editable installs
 _pkg_dir = os.path.dirname(__file__)
@@ -45,7 +46,7 @@ __all__ = [
     'get_snp_version',
 ]
 
-def get_attestation_ccf(report_data: str = '') -> str:
+def get_attestation_ccf(report_data: bytes = b'') -> str:
     """
     Retrieve a SNP attestation JSON string.
 
@@ -53,12 +54,15 @@ def get_attestation_ccf(report_data: str = '') -> str:
     :returns: JSON string with evidence and endorsements.
     """
     args = [_exe_get_att]
-    if report_data:
-        args.append(report_data)
-    result = subprocess.run(args, capture_output=True, text=True, check=True)
+    with tempfile.NamedTemporaryFile() as tmp:
+        tmp.write(report_data)
+        tmp.flush()
+        if report_data:
+            args.append(tmp.name)
+        result = subprocess.run(args, capture_output=True, text=True, check=True)
     return result.stdout
 
-def verify_attestation_ccf(ccf_attestation: str, report_data: str = '', security_policy_b64: str = '') -> bool:
+def verify_attestation_ccf(ccf_attestation: str, report_data: bytes = b'', security_policy_b64: str = '') -> bool:
     """
     Verify a SNP attestation JSON string.
 
@@ -68,13 +72,16 @@ def verify_attestation_ccf(ccf_attestation: str, report_data: str = '', security
     :returns: True if verification succeeds, False otherwise.
     """
     args = [_exe_verify]
-    args.append(ccf_attestation)
-    if report_data:
-        args.extend(['--report-data', report_data])
-    if security_policy_b64:
-        args.extend(['--security-policy-b64', security_policy_b64])
+    with tempfile.NamedTemporaryFile() as tmp:
+        if report_data:
+            tmp.write(report_data)
+            tmp.flush()
+            args.extend(['--report-data', tmp.name])
+        if security_policy_b64:
+            args.extend(['--security-policy-b64', security_policy_b64])
+        args.append(ccf_attestation)
 
-    result = subprocess.run(args)
+        result = subprocess.run(args)
     return result.returncode == 0
 
 def get_snp_version() -> str:

@@ -29,7 +29,7 @@ def test_get_attestation_ccf():
 
 
 def test_get_attestation_ccf_with_report_data():
-    ccf_attestation = json.loads(get_attestation_ccf("hello"))
+    ccf_attestation = json.loads(get_attestation_ccf(b"hello"))
     assert "evidence" in ccf_attestation
     assert "endorsements" in ccf_attestation
     assert "uvm_endorsements" in ccf_attestation
@@ -39,7 +39,7 @@ def test_verify_attestation_ccf():
     ccf_attestation = get_attestation_ccf()
     assert verify_attestation_ccf(
         ccf_attestation,
-        report_data="example-report-data",
+        report_data=b"example-report-data",
         security_policy_b64=get_security_policy_b64()
     ) == True
 
@@ -48,7 +48,7 @@ def test_verify_attestation_ccf_bad_report_data():
     ccf_attestation = get_attestation_ccf()
     assert verify_attestation_ccf(
         ccf_attestation,
-        report_data="bad-report-data",
+        report_data=b"bad-report-data",
         security_policy_b64=get_security_policy_b64()
     ) == False
 
@@ -57,6 +57,6 @@ def test_verify_attestation_ccf_bad_security_policy():
     ccf_attestation = get_attestation_ccf()
     assert verify_attestation_ccf(
         ccf_attestation,
-        report_data="example-report-data",
+        report_data=b"example-report-data",
         security_policy_b64=b64encode(b"bad-policy").decode('utf-8')
     ) == False
