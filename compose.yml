@@ -22,6 +22,6 @@ services:
         echo "$(get_attestation_ccf)"
         get_attestation_ccf \
           | xargs -0 verify_attestation_ccf \
-            --report-data "example-report-data" \
+            --report-data <(printf 'example-report-data') \
             --security-policy-b64 "$(cat /src/policy_aci.rego | base64 -w 0)"
       '
