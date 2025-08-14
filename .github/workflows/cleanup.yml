@@ -6,8 +6,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  cleanup-acr:
+  acr:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
     - uses: azure/login@v2
       with:
