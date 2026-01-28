@@ -6,11 +6,6 @@ on:
   pull_request:
     branches: [ main, dev/* ]
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'The tag to use for the release'
-        required: true
-        type: string
   workflow_call:
     inputs:
       tag:
